@@ -1,0 +1,31 @@
+{
+  "name": "merpaverse-manager",
+  "description": "A plugin to help manage MERP servers. Includes \"Dogelix's MERPaverse\" combat system utils.",
+  "author": "dogelix",
+  "config": {
+  },
+  "commands": [
+    {
+      "name": "/dmerp:stat",
+      "description": "Generate a statistics brick for use with your units.",
+      "example": "/dmerp:stat micro 1 1",
+      "args":[
+        {
+          "name": "size",
+          "description": "Size of the stat brick",
+          "required": true
+        },
+        {
+          "name": "AV",
+          "description": "Armour Value",
+          "required": true
+        },
+        {
+          "name": "AP",
+          "description": "Armour Penetration",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
