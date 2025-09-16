@@ -9,7 +9,6 @@ type Config = {
 type Storage = {
 };
 
-const GITHUB_URL = 'https://github.com/Dogelix/merpaverse-manager';
 
 export default class Plugin implements OmeggaPlugin<Config, Storage> {
   omegga: OL;
