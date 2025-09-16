@@ -9,9 +9,7 @@ type Config = {
 type Storage = {
 };
 
-// update checker constants
-const PLUGIN_VERSION = '0.0.1';
-const GITHUB_URL = 'https://github.com/Dogelix/omegga-serverannouncements';
+const GITHUB_URL = 'https://github.com/Dogelix/merpaverse-manager';
 
 export default class Plugin implements OmeggaPlugin<Config, Storage> {
   omegga: OL;

@@ -1,12 +1,12 @@
 {
-  "name": "omegga-serverannouncements",
-  "version": "0.0.2",
-  "description": "A simple plugin that posts announcements in the server at times set by you..",
+  "name": "merpaverse-manager",
+  "version": "0.0.1",
+  "description": "A plugin to help manage MERP servers. Includes \"Dogelix's MERPaverse\" combat system utils.",
   "main": "omegga.plugin.ts",
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dogelix/omegga-serverannouncements.git"
+    "url": "git+https://github.com/Dogelix/merpaverse-manager"
   },
   "author": "Dogelix",
   "license": "MIT",
