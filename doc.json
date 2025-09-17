@@ -6,9 +6,9 @@
   },
   "commands": [
     {
-      "name": "/dmerp-stat",
+      "name": "!dmerp-stat",
       "description": "Generate a statistics brick for use with your units.",
-      "example": "/dmerp-stat micro 1 1",
+      "example": "!dmerp-stat micro 1 1",
       "args":[
         {
           "name": "size",
