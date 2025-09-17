@@ -69,7 +69,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         },
         bricks: [
           {
-            material_index: 3,
+            material_index: 1,
             asset_name_index: 0,
             position: [0, 0, 0],
             size: [1, 1, 1],
