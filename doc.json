@@ -16,12 +16,12 @@
           "required": true
         },
         {
-          "name": "AV",
+          "name": "av",
           "description": "Armour Value",
           "required": true
         },
         {
-          "name": "AP",
+          "name": "ap",
           "description": "Armour Penetration",
           "required": true
         }
