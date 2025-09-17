@@ -33,7 +33,6 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     this.omegga
       // Statistic Brick
       .on("chatcmd:dmerp-stat", (name: string, size: string, av: string, ap: string) => {
-        console.log("test");
         try {
           const player = this.omegga.getPlayer(name);
           this.omegga.whisper(player, this.formattedMessage("Generating Statistics Brick"));
@@ -43,6 +42,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           if (Number.isNaN(avNo) || Number.isNaN(apNo)) {
             this.omegga.whisper(player, this.formattedMessage("AV or AP was not a <b>WHOLE</b> number."));
           }
+
+          console.log(size, av, ap, avNo, apNo);
 
           this.cmdStatBrick(player, size, avNo, apNo);
         } catch (ex) {
