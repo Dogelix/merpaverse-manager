@@ -33,8 +33,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     this.omegga
       // Statistic Brick
       .on("chatcmd:dmerp-stat", (name: string, size: string, av: string, ap: string) => {
+        console.log("test");
         try {
           const player = this.omegga.getPlayer(name);
+          this.omegga.whisper(player, this.formattedMessage("Generating Statistics Brick"));
           const avNo = parseInt(av);
           const apNo = parseInt(ap);
 
