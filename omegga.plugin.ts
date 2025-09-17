@@ -84,7 +84,11 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           BCD_Interact: {
             version: 1,
             brick_indices: [0],
-            properties: interactLabel
+            properties: {
+              bPlayInteractSound: "Boolean",
+              Message: "String",
+              ConsoleTag: "String"
+            }
           }
         },
         bricks: [
