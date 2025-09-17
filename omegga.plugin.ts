@@ -1,8 +1,8 @@
 import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents } from 'omegga';
 
 const publicUser = {
-	id: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
-	name: 'Generator',
+  id: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
+  name: 'Generator',
 };
 
 // plugin config and storage
@@ -84,6 +84,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }, player);
     } catch (e) {
       this.omegga.whisper(player, `Unable to create statistics brick.`);
+
+      console.log("MERPaverse", e);
     }
   }
 
