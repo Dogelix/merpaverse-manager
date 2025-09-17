@@ -55,11 +55,16 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   async cmdStatBrick(player: OmeggaPlayer, size: string, av: number, ap: number) {
     try {
       const interactLabel = {
-        bPlayInteractSound: true,
-        Message: `<b>Stats</b>:
-<color="#dbc60b">AV</color> : ${av}
-<color="#de6b00">AP</color> : ${ap}`,
-        ConsoleTag: '',
+        Component_Interact: {
+          InteractSound: 'OBA_UI_Goal_Tune_Cue',
+          Message: '<b>Stats</b>:\r\n' +
+            `<color="#dbc60b">AV</color> : ${av}\r\n` +
+            `<color="#de6b00">AP</color> : ${ap}`,
+          ConsoleTag: '',
+          bAllowNearbyInteraction: true,
+          bHiddenInteraction: false,
+          PromptCustomLabel: 'Statistics'
+        }
       };
 
       console.log(interactLabel);
@@ -81,13 +86,16 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           "BMC_Glow"
         ],
         components: {
-          BCD_Interact: {
+          Component_Interact: {
             version: 1,
             brick_indices: [0],
             properties: {
-              bPlayInteractSound: "Boolean",
-              Message: "String",
-              ConsoleTag: "String"
+              InteractSound: 'Object',
+              Message: 'String',
+              ConsoleTag: 'String',
+              bAllowNearbyInteraction: 'Boolean',
+              bHiddenInteraction: 'Boolean',
+              PromptCustomLabel: 'String'
             }
           }
         },
@@ -99,7 +107,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
             position: [0, 0, 0],
             size: [5, 5, 6],
             color: paint.color,
-            components: { BCD_Interact: interactLabel }
+            components: interactLabel
           }
         ],
       };
@@ -108,7 +116,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
       await this.omegga.loadSaveDataOnPlayer(brick, player);
     } catch (e) {
-      this.omegga.whisper(player, `Unable to create statistics brick.`);
+      this.omegga.whisper(player, this.formattedMessage(`Unable to create statistics brick.`));
 
       console.log("MERPaverse", e);
     }
