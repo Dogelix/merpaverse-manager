@@ -1,4 +1,4 @@
-import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents } from 'omegga';
+import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents, WriteSaveObject } from 'omegga';
 
 const publicUser = {
   id: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
@@ -62,10 +62,14 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         ConsoleTag: '',
       };
 
+      console.log(interactLabel);
+
       let paint = await player.getPaint();
       paint.material = "BMC_Glow";
 
-      this.omegga.loadSaveDataOnPlayer({
+      console.log(paint);
+
+      const brick: WriteSaveObject = {
         author: {
           id: publicUser.id,
           name: 'TypeScript',
@@ -76,12 +80,16 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
             asset_name_index: 0,
             position: [0, 0, 0],
             size: [1, 1, 1],
-            color: 0,
+            color: paint.color,
             components: { BCD_Interact: interactLabel }
-
           }
         ]
-      }, player);
+      };
+
+      
+      console.log(brick);
+
+      this.omegga.loadSaveDataOnPlayer(brick, player);
     } catch (e) {
       this.omegga.whisper(player, `Unable to create statistics brick.`);
 
