@@ -77,14 +77,21 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         brick_assets: [
           "PB_DefaultBrick"
         ],
-        materials:[
+        materials: [
           "BMC_Glow"
         ],
+        components: {
+          BCD_Interact: {
+            version: 1,
+            brick_indices: [0],
+            properties: interactLabel
+          }
+        },
         bricks: [
           {
             material_index: 0,
             asset_name_index: 0,
-            rotation: 0, 
+            rotation: 0,
             position: [0, 0, 0],
             size: [5, 5, 6],
             color: paint.color,
@@ -92,7 +99,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           }
         ],
       };
-      
+
       console.log(brick);
 
       await this.omegga.loadSaveDataOnPlayer(brick, player);
