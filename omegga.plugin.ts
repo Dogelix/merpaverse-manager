@@ -74,6 +74,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           id: player.id,
           name: player.name,
         },
+        brick_assets: [
+          "PB_DefaultMicroBrick"
+        ],
         bricks: [
           {
             material_index: 1,
