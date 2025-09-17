@@ -26,6 +26,23 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "!dmerp-combat",
+      "description": "Generate a statistics brick for use with your units.",
+      "example": "!dmerp-stat 1 1",
+      "args":[
+        {
+          "name": "av",
+          "description": "Armour Value",
+          "required": true
+        },
+        {
+          "name": "ap",
+          "description": "Armour Penetration",
+          "required": true
+        }
+      ]
     }
   ]
 }

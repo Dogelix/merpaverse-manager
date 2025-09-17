@@ -46,7 +46,61 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         } catch (ex) {
           console.error("An eror occured in dmerp:stat", ex);
         }
+      })
+      // Combat roll
+      .on("chatcmd:dmerp-combat", (name: string, av: string, ap: string) => {
+        try {
+          const player = this.omegga.getPlayer(name);
+          const avNo = parseInt(av);
+          const apNo = parseInt(ap);
+
+          if (Number.isNaN(avNo) || Number.isNaN(apNo)) {
+            this.omegga.whisper(player, this.formattedMessage("AV or AP was not a <b>WHOLE</b> number."));
+          }
+          this.cmdCombatRoll(player, avNo, apNo);
+        } catch (ex) {
+          console.error("An eror occured in dmerp:combat", ex);
+        }
       });
+  }
+
+  async cmdCombatRoll(player: OmeggaPlayer, av: number, ap: number) {
+    const player1Name = `<color="${player.getNameColor()}">${player.name}</>`;
+    this.omegga.broadcast(this.formattedMessage(`${player1Name} is making a combat roll (attacking).`));
+
+    // player running the command
+    let attacker = this.getRandomInt(3, 18);
+    const defender = this.getRandomInt(3, 18);
+
+    if (ap > av) {
+      const difference = ap - av;
+      this.omegga.broadcast(this.formattedMessage(`<color="#de6b00">AP</> > <color="#dbc60b">AV</> applying a +${difference} to attacker roll.`));
+      attacker += difference;
+      if (attacker > 18) {
+        attacker = 18;
+      }
+    }
+
+    if (attacker === 3) {
+      this.omegga.broadcast(this.formattedMessage(`${player1Name} rolled a <b>Critical Fail</>. No damage taken.`));
+    }
+    else if (defender === 3) {
+      this.omegga.broadcast(this.formattedMessage(`Defender rolled a <b>Critical Fail</>. Double damage taken.`));
+    }
+    else if (attacker === 18) {
+      const critDamage = ap + 1;
+      this.omegga.broadcast(this.formattedMessage(`${player1Name} rolled a <b>Critical Hit</>. Damage resolved at ${critDamage > 8 ? "Double Damage" : `<color="#de6b00">AP</>:${critDamage}`}.`));
+    }
+    else if (defender >= attacker) {
+      this.omegga.broadcast(this.formattedMessage(`${player1Name}: ${attacker} vs. Defender: ${defender}. No damage taken.`));
+    } else {
+      this.omegga.broadcast(this.formattedMessage(`${player1Name}: ${attacker} vs. Defender: ${defender}. Damage taken.`));
+    }
+  }
+
+  getRandomInt(min: number, max: number): number {
+    // Inclusive of both min and max
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   async cmdStatBrick(player: OmeggaPlayer, size: string, av: number, ap: number) {
