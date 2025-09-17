@@ -75,18 +75,22 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           name: player.name,
         },
         brick_assets: [
-          "PB_DefaultMicroBrick"
+          "PB_DefaultBrick"
+        ],
+        materials:[
+          "BMC_Glow"
         ],
         bricks: [
           {
-            material_index: 1,
+            material_index: 0,
             asset_name_index: 0,
+            rotation: 0, 
             position: [0, 0, 0],
-            size: [1, 1, 1],
+            size: [5, 5, 6],
             color: paint.color,
             components: { BCD_Interact: interactLabel }
           }
-        ]
+        ],
       };
       
       console.log(brick);
