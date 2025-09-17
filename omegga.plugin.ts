@@ -1,4 +1,4 @@
-import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents, WriteSaveObject } from 'omegga';
+import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents, WriteSaveObject, Vector } from 'omegga';
 
 const publicUser = {
   id: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
@@ -42,9 +42,6 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           if (Number.isNaN(avNo) || Number.isNaN(apNo)) {
             this.omegga.whisper(player, this.formattedMessage("AV or AP was not a <b>WHOLE</b> number."));
           }
-
-          console.log(size, av, ap, avNo, apNo);
-
           this.cmdStatBrick(player, size, avNo, apNo);
         } catch (ex) {
           console.error("An eror occured in dmerp:stat", ex);
@@ -67,12 +64,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         }
       };
 
-      console.log(interactLabel);
-
       let paint = await player.getPaint();
       paint.material = "BMC_Glow";
 
-      console.log(paint);
+      const brickSize = this.getBrickSize(size);
 
       const brick: WriteSaveObject = {
         author: {
@@ -80,7 +75,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           name: player.name,
         },
         brick_assets: [
-          "PB_DefaultBrick"
+          brickSize.brickName
         ],
         materials: [
           "BMC_Glow"
@@ -105,20 +100,18 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
             asset_name_index: 0,
             rotation: 0,
             position: [0, 0, 0],
-            size: [5, 5, 6],
+            size: brickSize.brickSize,
             color: paint.color,
             components: interactLabel
           }
         ],
       };
 
-      console.log(brick);
-
       await this.omegga.loadSaveDataOnPlayer(brick, player);
     } catch (e) {
       this.omegga.whisper(player, this.formattedMessage(`Unable to create statistics brick.`));
 
-      console.log("MERPaverse", e);
+      console.error("MERPaverse", e);
     }
   }
 
@@ -126,5 +119,30 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     // this.announcementTimeouts.map((timeout) => {
     //   clearTimeout(timeout);
     // });
+  }
+
+
+  getBrickSize(size: string): { brickName: string, brickSize: Vector } {
+    switch (size) {
+      default:
+      case "large":
+      case "l":
+        return {
+          brickName: "PB_DefaultBrick",
+          brickSize: [5, 5, 6]
+        }
+      case "medium":
+      case "m":
+        return {
+          brickName: "B_1x1F_Round",
+          brickSize: [5, 5, 3]
+        }
+      case "small":
+      case "s":
+        return {
+          brickName: "PB_DefaultMicroBrick",
+          brickSize: [1, 1, 1]
+        }
+    }
   }
 }
