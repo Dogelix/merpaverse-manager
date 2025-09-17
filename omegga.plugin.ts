@@ -85,11 +85,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           }
         ]
       };
-
       
       console.log(brick);
 
-      this.omegga.loadSaveDataOnPlayer(brick, player);
+      await this.omegga.loadSaveDataOnPlayer(brick, player);
     } catch (e) {
       this.omegga.whisper(player, `Unable to create statistics brick.`);
 
