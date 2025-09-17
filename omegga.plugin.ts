@@ -32,7 +32,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   async init() {
     this.omegga
       // Statistic Brick
-      .on("cmd:dmerp:stat", (name: string, size: string, av: string, ap: string) => {
+      .on("cmd:dmerp-stat", (name: string, size: string, av: string, ap: string) => {
         try {
           const player = this.omegga.getPlayer(name);
           const avNo = parseInt(av);
