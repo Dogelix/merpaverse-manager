@@ -71,8 +71,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
       const brick: WriteSaveObject = {
         author: {
-          id: publicUser.id,
-          name: 'TypeScript',
+          id: player.id,
+          name: player.name,
         },
         bricks: [
           {
