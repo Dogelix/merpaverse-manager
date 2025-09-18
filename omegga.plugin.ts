@@ -114,7 +114,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   async cmdHandleChat(player: OmeggaPlayer, option: string) {
     if(["join", "j"].includes(option.toLowerCase())){
       let players = await this.store.get("playersInRPChat");
-      if((await players).includes(player)){
+      const playersIds = players.map(e => e.id);
+      console.log("playerIds", playersIds);
+
+      if(playersIds.includes(player.id)){
         this.omegga.whisper(player, this.formattedMessage("You are already in the RP chat"));
         return;
       }
