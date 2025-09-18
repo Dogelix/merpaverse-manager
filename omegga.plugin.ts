@@ -1,5 +1,6 @@
 import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents, WriteSaveObject, Vector } from 'omegga';
 import CooldownProvider from './util.cooldown.js';
+import { appendFileSync, writeFileSync } from 'node:fs';
 
 // plugin config and storage
 type Config = {
@@ -12,6 +13,7 @@ type Config = {
 
 type Storage = {
   playersInRPChat: OmeggaPlayer[];
+  currentFileForRPChat?: string | null;
 };
 
 
@@ -125,12 +127,44 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     const rpChatFormat = (sendingPlayer: OmeggaPlayer, msg: string) => {
       const sendingPlayerColour = sendingPlayer.getNameColor();
-      return `[<b><color="#1c62d4">RP Chat</></>]<color="${sendingPlayerColour}">${sendingPlayer.name}</>: ${msg}`;
+      return `[<b><color="#1c62d4">RP Chat</></>] <color="${sendingPlayerColour}">${sendingPlayer.name}</>: ${msg}`;
     }
 
+    const writeToChatLog = async (event: object) => {
+      const fileName = await this.store.get("currentFileForRPChat");
+
+      if (fileName != null) {
+        appendFileSync(fileName, JSON.stringify(event) + "\n", "utf8");
+      }
+      else {
+        const currentDate = new Date();
+        const newFileName = `RPChatLog-${this.formatDateForFilename(currentDate)}.json`;
+        this.store.set("currentFileForRPChat", newFileName);
+
+        writeFileSync(newFileName, "[" + JSON.stringify(event) + ",\n", "utf8");
+      }
+
+    }
+
+    const currentDate = new Date();
+    writeToChatLog({dateTime: currentDate.toISOString(), user: player.name, message: message});
     players.map((p) => {
-      this.omegga.middlePrint(p, rpChatFormat(player, message)); 
+      this.omegga.middlePrint(p, rpChatFormat(player, message));
+      
     });
+  }
+
+  formatDateForFilename(d: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, "0");
+
+    const year = d.getFullYear();
+    const month = pad(d.getMonth() + 1);
+    const day = pad(d.getDate());
+    const hours = pad(d.getHours());
+    const minutes = pad(d.getMinutes());
+    const seconds = pad(d.getSeconds());
+
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
   }
 
   async cmdHandleChat(player: OmeggaPlayer, option: string) {
@@ -151,6 +185,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       players = players.filter(e => e.id != player.id);
       this.store.set("playersInRPChat", players);
       this.omegga.whisper(player, this.formattedMessage(`You have <color="#ad1313">left</> the RP Chat.`));
+
+      if(players.length <= 0){
+        const fileName = await this.store.get("currentFileForRPChat");
+        appendFileSync(fileName, "]");
+        this.store.set("currentFileForRPChat", null);
+      }
     }
   }
 
