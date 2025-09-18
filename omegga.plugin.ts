@@ -55,8 +55,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         let players = await this.store.get("playersInRPChat");
         const playersIds = players.map(e => e.id);
         if (playersIds.includes(player.id)) {
-          console.log(name, message);
-          this.omegga.middlePrint(player, message);
+
         }
 
       })
@@ -119,6 +118,19 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           console.error("An eror occured in dmerp:combat", ex);
         }
       });
+  }
+
+  async handleRPChatMessages(player: OmeggaPlayer, message: string) {
+    const players = await this.store.get("playersInRPChat");
+
+    const rpChatFormat = (sendingPlayer: OmeggaPlayer, msg: string) => {
+      const sendingPlayerColour = sendingPlayer.getNameColor();
+      return `[<b><color="#1c62d4">RP Chat</></>]\n<color="${sendingPlayerColour}">${sendingPlayer.name}</>: ${msg}`;
+    }
+
+    players.map((p) => {
+      this.omegga.middlePrint(p, rpChatFormat(player, message));
+    })
   }
 
   async cmdHandleChat(player: OmeggaPlayer, option: string) {
