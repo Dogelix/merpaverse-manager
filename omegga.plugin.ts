@@ -176,8 +176,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     const currentDate = new Date();
     writeToChatLog({ dateTime: currentDate.toISOString(), user: player.name, message: message });
+    console.log("RP Chat:", player.name, message);
     players.map((p) => {
-      this.omegga.whisper(p, rpChatFormat(player, message));
+      console.log(p.name);
+      this.omegga.whisper(p.name, rpChatFormat(player, message));
     });
   }
 
