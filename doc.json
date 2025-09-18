@@ -41,6 +41,12 @@
       ]
     },
     {
+      "name": "!dmerp-h",
+      "description": "A help function to list commands.",
+      "example": "!dmerp-h",
+      "args": [      ]
+    },
+    {
       "name": "!dmerp-rp",
       "description": "Generate a statistics brick for use with your units.",
       "example": "!dmerp-stat join",
