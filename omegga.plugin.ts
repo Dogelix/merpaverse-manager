@@ -56,7 +56,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         const player = this.omegga.getPlayer(name);
         let players = await this.store.get("playersInRPChat");
         const playersIds = players.map(e => e.id);
-        if (playersIds.includes(player.id)) {
+        if (playersIds.includes(player.id) && !message.startsWith("!dmerp")) {
           this.handleRPChatMessages(player, message);
         }
 
@@ -141,7 +141,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         const newFileName = `RPChatLog-${this.formatDateForFilename(currentDate)}.json`;
         this.store.set("currentFileForRPChat", newFileName);
 
-        writeFileSync(newFileName, "[" + JSON.stringify(event) + ",\n", "utf8");
+        writeFileSync(newFileName, "[\n" + JSON.stringify(event) + ",\n", "utf8");
       }
 
     }
