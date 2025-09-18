@@ -1,4 +1,4 @@
-import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents, WriteSaveObject, Vector } from 'omegga';
+import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, WriteSaveObject, Vector } from 'omegga';
 import CooldownProvider from './util.cooldown.js';
 import { appendFileSync, writeFileSync } from 'node:fs';
 
@@ -52,7 +52,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     };
 
     this.omegga
-      .on("cmd:dmerp-c", async (name: string, message: string) => {
+      .on("cmd:dmerp-c", async (name: string, ...contents) => {
         const player = this.omegga.getPlayer(name);
 
         if (!authorized(name)) {
@@ -62,8 +62,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
         let players = await this.store.get("playersInRPChat");
         const playersIds = players.map(e => e.id);
-        if (playersIds.includes(player.id) && !message.startsWith("!") || !message.startsWith("/") ) {
-          this.handleRPChatMessages(player, message);
+        if (playersIds.includes(player.id)) {
+          const content = OMEGGA_UTIL.chat.parseLinks(OMEGGA_UTIL.chat.sanitize(contents.join(" ")));
+          this.handleRPChatMessages(player, content);
         } else{
           this.omegga.whisper(player, this.formattedMessage("Not in RP Chat"));
         }
