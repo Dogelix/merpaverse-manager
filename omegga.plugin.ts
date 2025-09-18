@@ -214,7 +214,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       `Makes a combat roll. The person whom did the command is the attacker.`,
       `• av: 0-8`,
       `• ap: 0-8`,
-    ]
+    ];
 
     this.omegga.whisper(player, this.formattedMessage("Command list:"));
     commandsList.map(message => {
@@ -242,9 +242,15 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       this.omegga.whisper(player, this.formattedMessage(`You have <color="#ad1313">left</> the RP Chat.`));
 
       if (players.length <= 0) {
-        const fileName = await this.store.get("currentFileForRPChat");
-        appendFileSync(fileName, "]");
-        this.store.set("currentFileForRPChat", null);
+        try {
+          const fileName = await this.store.get("currentFileForRPChat");
+          appendFileSync(fileName, "]");
+
+        } catch (e) {
+          console.error(e);
+        } finally {
+          this.store.set("currentFileForRPChat", null);
+        }
       }
     }
   }
