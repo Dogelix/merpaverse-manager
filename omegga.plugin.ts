@@ -55,7 +55,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         let players = await this.store.get("playersInRPChat");
         const playersIds = players.map(e => e.id);
         if (playersIds.includes(player.id)) {
-
+          this.handleRPChatMessages(player, message);
         }
 
       })
