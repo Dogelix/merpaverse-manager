@@ -247,7 +247,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           appendFileSync(fileName, "]");
 
         } catch (e) {
-          console.error(e);
+          console.error("Last person left RP chat but file didn't exist.");
         } finally {
           this.store.set("currentFileForRPChat", null);
         }
