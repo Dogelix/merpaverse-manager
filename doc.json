@@ -29,6 +29,30 @@
   },
   "commands": [
     {
+      "name": "/dmerpc",
+      "description": "send rp chat message",
+      "example": "!dmerp-stat message",
+      "args": [
+        {
+          "name": "message",
+          "description": "Message",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "!dmerp-rp",
+      "description": "Generate a statistics brick for use with your units.",
+      "example": "!dmerp-stat join",
+      "args": [
+        {
+          "name": "option",
+          "description": "Option to join or leave RP Chat (join, j, leave, l)",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "!dmerp-stat",
       "description": "Generate a statistics brick for use with your units.",
       "example": "!dmerp-stat micro 1 1",

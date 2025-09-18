@@ -52,14 +52,21 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     };
 
     this.omegga
-      .on("chat", async (name: string, message: string) => {
+      .on("cmd:dmerp-c", async (name: string, message: string) => {
         const player = this.omegga.getPlayer(name);
-        let players = await this.store.get("playersInRPChat");
-        const playersIds = players.map(e => e.id);
-        if (playersIds.includes(player.id) && !message.startsWith("!dmerp")) {
-          this.handleRPChatMessages(player, message);
+
+        if (!authorized(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+          return;
         }
 
+        let players = await this.store.get("playersInRPChat");
+        const playersIds = players.map(e => e.id);
+        if (playersIds.includes(player.id) && !message.startsWith("!") || !message.startsWith("/") ) {
+          this.handleRPChatMessages(player, message);
+        } else{
+          this.omegga.whisper(player, this.formattedMessage("Not in RP Chat"));
+        }
       })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
