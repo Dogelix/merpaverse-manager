@@ -1,4 +1,4 @@
-import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, WriteSaveObject, Vector } from 'omegga';
+import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, WriteSaveObject, Vector, UnrealString } from 'omegga';
 import CooldownProvider from './util.cooldown.js';
 import { appendFileSync, writeFileSync } from 'node:fs';
 
@@ -65,18 +65,34 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         if (playersIds.includes(player.id)) {
           const content = OMEGGA_UTIL.chat.parseLinks(OMEGGA_UTIL.chat.sanitize(contents.join(" ")));
           this.handleRPChatMessages(player, content);
-        } else{
+        } else {
           this.omegga.whisper(player, this.formattedMessage("Not in RP Chat"));
         }
+      })
+      .on("chatcmd:dmerp-h", (name: string) => {
+        const player = this.omegga.getPlayer(name);
+        if (!authorized(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+          return;
+        }
+
+        if (!cooldown(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+          return;
+        }
+
+        this.cmdHelp(player);
       })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
         if (!authorized(name)) {
           this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+          return;
         }
 
         if (!cooldown(name)) {
           this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+          return;
         }
 
         this.cmdHandleChat(player, option);
@@ -86,10 +102,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         const player = this.omegga.getPlayer(name);
         if (!authorized(name)) {
           this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+          return;
         }
 
         if (!cooldown(name)) {
           this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+          return;
         }
 
         try {
@@ -110,10 +128,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         const player = this.omegga.getPlayer(name);
         if (!authorized(name)) {
           this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+          return;
         }
 
         if (!cooldown(name)) {
           this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+          return;
         }
 
         try {
@@ -155,7 +175,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     }
 
     const currentDate = new Date();
-    writeToChatLog({dateTime: currentDate.toISOString(), user: player.name, message: message});
+    writeToChatLog({ dateTime: currentDate.toISOString(), user: player.name, message: message });
     players.map((p) => {
       this.omegga.whisper(p, rpChatFormat(player, message));
     });
@@ -172,6 +192,34 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     const seconds = pad(d.getSeconds());
 
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+  }
+
+  async cmdHelp(player: OmeggaPlayer) {
+    const commandsList = [
+      `<color="#ffee00ff">/dmerp-c message</>`,
+      `Send a message in the RP chat, if you have joined.`,
+      `<color="#ffee00ff">!dmerp-h</>`,
+      `You have just used it.`,
+      `<color="#ffee00ff">!dmerp-rp option</>`,
+      `Allows you to join or leave the RP Chat`,
+      `Options:`,
+      `• join, JOIN, j, J`,
+      `• leave, LEAVE, l, L`,
+      `<color="#ffee00ff">!dmerp-stat size av ap</>`,
+      `Generates a statistics brick of your selected size. The colour is the one selected in you painter but with the glow material.`,
+      `• size: large/l, medium/m, small/s`,
+      `• av: 0-8`,
+      `• ap: 0-8`,
+      `<color="#ffee00ff">!dmerp-combat av ap</>`,
+      `Makes a combat roll. The person whom did the command is the attacker.`,
+      `• av: 0-8`,
+      `• ap: 0-8`,
+    ]
+
+    this.omegga.whisper(player, this.formattedMessage("Command list:"));
+    commandsList.map(message => {
+      this.omegga.whisper(player, message);
+    });
   }
 
   async cmdHandleChat(player: OmeggaPlayer, option: string) {
@@ -193,7 +241,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       this.store.set("playersInRPChat", players);
       this.omegga.whisper(player, this.formattedMessage(`You have <color="#ad1313">left</> the RP Chat.`));
 
-      if(players.length <= 0){
+      if (players.length <= 0) {
         const fileName = await this.store.get("currentFileForRPChat");
         appendFileSync(fileName, "]");
         this.store.set("currentFileForRPChat", null);
@@ -242,6 +290,19 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
   async cmdStatBrick(player: OmeggaPlayer, size: string, av: number, ap: number) {
     try {
+      if (av < 0) {
+        av = 0;
+      }
+      if (ap < 0) {
+        av = 0;
+      }
+      if (av > 8) {
+        av = 8;
+      }
+      if (ap > 8) {
+        av = 8;
+      }
+
       const interactLabel = {
         Component_Interact: {
           InteractSound: 'OBA_UI_Goal_Tune_Cue',
