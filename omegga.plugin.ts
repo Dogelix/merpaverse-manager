@@ -1,12 +1,12 @@
 import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, DefinedComponents, WriteSaveObject, Vector } from 'omegga';
-
-const publicUser = {
-  id: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
-  name: 'Generator',
-};
+import CooldownProvider from './util.cooldown.js';
 
 // plugin config and storage
 type Config = {
+  'only-authorized': boolean;
+  'authorized-users': { id: string; name: string }[];
+  'authorized-roles': string[];
+  cooldown: number;
 };
 
 
@@ -30,11 +30,35 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   }
 
   async init() {
+
+    const duration = Math.max(this.config.cooldown * 1000, 0);
+    const cooldown = duration <= 0 ? () => true : CooldownProvider(duration);
+
+    const authorized = (name: string) => {
+      const player = this.omegga.getPlayer(name);
+      return (
+        !this.config['only-authorized'] ||
+        player.isHost() ||
+        this.config['authorized-users'].some(p => player.id === p.id) ||
+        player
+          .getRoles()
+          .some(role => this.config['authorized-roles'].includes(role))
+      );
+    };
+
     this.omegga
       // Statistic Brick
       .on("chatcmd:dmerp-stat", (name: string, size: string, av: string, ap: string) => {
+        const player = this.omegga.getPlayer(name);
+        if (!authorized(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+        }
+
+        if (!cooldown(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+        }
+
         try {
-          const player = this.omegga.getPlayer(name);
           this.omegga.whisper(player, this.formattedMessage("Generating Statistics Brick"));
           const avNo = parseInt(av);
           const apNo = parseInt(ap);
@@ -49,8 +73,16 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       })
       // Combat roll
       .on("chatcmd:dmerp-combat", (name: string, av: string, ap: string) => {
+        const player = this.omegga.getPlayer(name);
+        if (!authorized(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+        }
+
+        if (!cooldown(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+        }
+        
         try {
-          const player = this.omegga.getPlayer(name);
           const avNo = parseInt(av);
           const apNo = parseInt(ap);
 
@@ -89,7 +121,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     }
     else if (attacker === 18) {
       const critDamage = ap + 1;
-      this.omegga.broadcast(this.formattedMessage(`${player1Name} rolled a <b>Critical Hit</>. Damage resolved at ${critDamage > 8 ? "Double Damage" : `<color="#de6b00">AP</>:${critDamage}`}.`));
+      this.omegga.broadcast(this.formattedMessage(`${player1Name} rolled a <b>Critical Hit</>. Damage resolved at ${critDamage > 8 ? "Double Damage" : `<color="#de6b00">AP</>: ${critDamage}`}.`));
     }
     else if (defender >= attacker) {
       this.omegga.broadcast(this.formattedMessage(`${player1Name}: ${attacker} vs. Defender: ${defender}. No damage taken.`));

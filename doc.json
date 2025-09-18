@@ -3,13 +3,36 @@
   "description": "A plugin to help manage MERP servers. Includes \"Dogelix's MERPaverse\" combat system utils.",
   "author": "dogelix",
   "config": {
+    "only-authorized": {
+      "description": "Whether only authorized players can use commands",
+      "type": "boolean",
+      "default": true
+    },
+    "authorized-users": {
+      "description": "List of players who can always use commands",
+      "type": "players",
+      "default": []
+    },
+    "authorized-roles": {
+      "description": "List of roles who can always use commands",
+      "type": "list",
+      "itemType": "role",
+      "default": [
+        "Admin"
+      ]
+    },
+    "cooldown": {
+      "description": "How long before users can re-run the command (seconds)",
+      "type": "number",
+      "default": 1
+    }
   },
   "commands": [
     {
       "name": "!dmerp-stat",
       "description": "Generate a statistics brick for use with your units.",
       "example": "!dmerp-stat micro 1 1",
-      "args":[
+      "args": [
         {
           "name": "size",
           "description": "Size of the stat brick",
@@ -31,7 +54,7 @@
       "name": "!dmerp-combat",
       "description": "Generate a statistics brick for use with your units.",
       "example": "!dmerp-stat 1 1",
-      "args":[
+      "args": [
         {
           "name": "av",
           "description": "Armour Value",
