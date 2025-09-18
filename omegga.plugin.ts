@@ -56,6 +56,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         const playersIds = players.map(e => e.id);
         if (playersIds.includes(player.id)) {
           console.log(name, message);
+          this.omegga.middlePrint(player, message);
         }
 
       })
