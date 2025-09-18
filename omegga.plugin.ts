@@ -11,6 +11,7 @@ type Config = {
 
 
 type Storage = {
+  playersInRPChat: OmeggaPlayer[];
 };
 
 
@@ -23,6 +24,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     this.omegga = omegga;
     this.config = config;
     this.store = store;
+
+    store.set("playersInRPChat", []);
   }
 
   formattedMessage(msg: string) {
@@ -47,6 +50,18 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     };
 
     this.omegga
+      .on("chatcmd:dmerp-rp", (name:string, option: string) =>{
+        const player = this.omegga.getPlayer(name);
+        if (!authorized(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+        }
+
+        if (!cooldown(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+        }
+
+        this.cmdHandleChat(player, option);
+      })
       // Statistic Brick
       .on("chatcmd:dmerp-stat", (name: string, size: string, av: string, ap: string) => {
         const player = this.omegga.getPlayer(name);
@@ -81,7 +96,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         if (!cooldown(name)) {
           this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
         }
-        
+
         try {
           const avNo = parseInt(av);
           const apNo = parseInt(ap);
@@ -94,6 +109,25 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           console.error("An eror occured in dmerp:combat", ex);
         }
       });
+  }
+
+  async cmdHandleChat(player: OmeggaPlayer, option: string) {
+    if(["join", "j"].includes(option.toLowerCase())){
+      let players = await this.store.get("playersInRPChat");
+      if((await players).includes(player)){
+        this.omegga.whisper(player, this.formattedMessage("You are already in the RP chat"));
+        return;
+      }
+
+      players.push(player);
+      this.store.set("playersInRPChat", players);
+      this.omegga.whisper(player, this.formattedMessage(`You have <color="#17ad3f">joined</> the RP Chat.`));
+    } else if(["leave", "l"].includes(option.toLowerCase())){
+      let players = await this.store.get("playersInRPChat");
+      players = players.filter(e => e.id != player.id);
+      this.store.set("playersInRPChat", players);
+      this.omegga.whisper(player, this.formattedMessage(`You have <color="#ad1313">left</> the RP Chat.`));
+    }
   }
 
   async cmdCombatRoll(player: OmeggaPlayer, av: number, ap: number) {
