@@ -29,16 +29,10 @@
   },
   "commands": [
     {
-      "name": "/dmerp-c",
+      "name": "/dmc",
       "description": "send rp chat message",
-      "example": "!dmerp-stat message",
-      "args": [
-        {
-          "name": "message",
-          "description": "Message",
-          "required": true
-        }
-      ]
+      "example": "/dmc Steve decides to hit something",
+      "args": []
     },
     {
       "name": "!dmerp-h",

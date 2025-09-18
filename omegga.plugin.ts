@@ -52,7 +52,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     };
 
     this.omegga
-      .on("cmd:dmerp-c", async (name: string, ...contents) => {
+      .on("cmd:dmc", async (name: string, ...contents) => {
         const player = this.omegga.getPlayer(name);
 
         if (!authorized(name)) {
@@ -196,7 +196,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
   async cmdHelp(player: OmeggaPlayer) {
     const commandsList = [
-      `<color="#ffee00ff">/dmerp-c message</>`,
+      `<color="#ffee00ff">/dmc message</>`,
       `Send a message in the RP chat, if you have joined.`,
       `<color="#ffee00ff">!dmerp-h</>`,
       `You have just used it.`,
