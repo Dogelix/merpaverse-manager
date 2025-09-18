@@ -50,7 +50,16 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     };
 
     this.omegga
-      .on("chatcmd:dmerp-rp", (name:string, option: string) =>{
+      .on("chat", async (name: string, message: string) => {
+        const player = this.omegga.getPlayer(name);
+        let players = await this.store.get("playersInRPChat");
+        const playersIds = players.map(e => e.id);
+        if (playersIds.includes(player.id)) {
+          console.log(name, message);
+        }
+
+      })
+      .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
         if (!authorized(name)) {
           this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
@@ -112,12 +121,11 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   }
 
   async cmdHandleChat(player: OmeggaPlayer, option: string) {
-    if(["join", "j"].includes(option.toLowerCase())){
+    if (["join", "j"].includes(option.toLowerCase())) {
       let players = await this.store.get("playersInRPChat");
       const playersIds = players.map(e => e.id);
-      console.log("playerIds", playersIds);
 
-      if(playersIds.includes(player.id)){
+      if (playersIds.includes(player.id)) {
         this.omegga.whisper(player, this.formattedMessage("You are already in the RP chat"));
         return;
       }
@@ -125,7 +133,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       players.push(player);
       this.store.set("playersInRPChat", players);
       this.omegga.whisper(player, this.formattedMessage(`You have <color="#17ad3f">joined</> the RP Chat.`));
-    } else if(["leave", "l"].includes(option.toLowerCase())){
+    } else if (["leave", "l"].includes(option.toLowerCase())) {
       let players = await this.store.get("playersInRPChat");
       players = players.filter(e => e.id != player.id);
       this.store.set("playersInRPChat", players);
