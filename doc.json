@@ -29,7 +29,7 @@
   },
   "commands": [
     {
-      "name": "/dmerpc",
+      "name": "/dmerp-c",
       "description": "send rp chat message",
       "example": "!dmerp-stat message",
       "args": [
