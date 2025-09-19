@@ -206,6 +206,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       `Options:`,
       `• join, JOIN, j, J`,
       `• leave, LEAVE, l, L`,
+      `• info, INFO, i, I`,
+      `• clear, CLEAR, c, C (GM Only)`,
       `<color="#ffee00ff">!dmerp-stat size av ap</>`,
       `Generates a statistics brick of your selected size. The colour is the one selected in you painter but with the glow material.`,
       `• size: large/l, medium/m, small/s`,
@@ -224,8 +226,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   }
 
   async cmdHandleChat(player: OmeggaPlayer, option: string) {
+    let players = await this.store.get("playersInRPChat");
+
     if (["join", "j"].includes(option.toLowerCase())) {
-      let players = await this.store.get("playersInRPChat");
       const playersIds = players.map(e => e.id);
 
       if (playersIds.includes(player.id)) {
@@ -237,7 +240,6 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       this.store.set("playersInRPChat", players);
       this.omegga.whisper(player, this.formattedMessage(`You have <color="#17ad3f">joined</> the RP Chat.`));
     } else if (["leave", "l"].includes(option.toLowerCase())) {
-      let players = await this.store.get("playersInRPChat");
       players = players.filter(e => e.id != player.id);
       this.store.set("playersInRPChat", players);
       this.omegga.whisper(player, this.formattedMessage(`You have <color="#ad1313">left</> the RP Chat.`));
@@ -252,6 +254,26 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         } finally {
           this.store.set("currentFileForRPChat", null);
         }
+      }
+    } else if (["info", "i"].includes(option.toLowerCase())) {
+      this.omegga.whisper(player, this.formattedMessage("Players currently in RP Chat:"));
+      players.map((p) => {
+        this.omegga.whisper(player, `<color="${p.getNameColor()}">${p.name}</>`);
+      });
+    } else if (["clear", "c"].includes(option.toLowerCase())) {
+      if (player.getRoles().includes("GM")) {
+        this.store.set("playersInRPChat", null);
+        try {
+          const fileName = await this.store.get("currentFileForRPChat");
+          appendFileSync(fileName, "]");
+
+        } catch (e) {
+          console.error("Last person left RP chat but file didn't exist.");
+        } finally {
+          this.store.set("currentFileForRPChat", null);
+        }
+      } else {
+        this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
       }
     }
   }
