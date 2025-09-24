@@ -184,7 +184,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       const planet = this.getRandomInt(1, 10)
       const size = this.getRandomInt(1, 4);
 
-      let planetString = "";
+      let planetString = `${planet} (shouldn't see this)`;
       let sizeString = "";
 
       switch (planet) {
