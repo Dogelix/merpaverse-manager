@@ -1,4 +1,4 @@
-import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, WriteSaveObject, Vector, UnrealString } from 'omegga';
+import { OmeggaPlugin, OL, PS, PC, OmeggaPlayer, WriteSaveObject, Vector } from 'omegga';
 import CooldownProvider from './util.cooldown.js';
 import { appendFileSync, writeFileSync } from 'node:fs';
 
@@ -83,6 +83,22 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
         this.cmdHelp(player);
       })
+      .on("chatcmd:dmerp-aetherion", (name: string, amount: number) => {
+        const player = this.omegga.getPlayer(name);
+        if (player
+          .getRoles()
+          .some(role => ["GM"].includes(role))) {
+          this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
+          return;
+        }
+
+        if (!cooldown(name)) {
+          this.omegga.whisper(player, this.formattedMessage("Commands on cooldown."));
+          return;
+        }
+
+        this.cmdAtherion(player, amount);
+      })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
         if (!authorized(name)) {
@@ -149,6 +165,63 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         }
       });
   }
+  async cmdAtherion(player: OmeggaPlayer, number: number) {
+    for (let index = number; index < number; index++) {
+      const planet = this.getRandomInt(1, 10)
+      const size = this.getRandomInt(1, 4);
+
+      let planetString = "";
+      let sizeString = "";
+
+      switch (planet) {
+        case 1:
+        case 5:
+          planetString = "Eryndor 1";
+          break;
+        case 2:
+          planetString = "Eryndor 2";
+          break;
+        case 3:
+          planetString = "Veylara";
+          break;
+        case 4:
+          planetString = "Eryndor 4";
+          break; 
+        case 6:
+          planetString = "Eryndor 6";
+          break;
+        case 7:
+          planetString = "Eryndor 7";
+          break;
+        case 8:
+          planetString = "Eryndor 8";
+          break;
+        case 8:
+          planetString = "Eryndor 9";
+          break;
+        case 10:
+          planetString = "Eryndor 10";
+          break;
+      }
+
+      switch (size) {
+        case 1:
+          sizeString = "Major Deposit";
+          break;
+        case 2:
+          sizeString = "Minor Deposit";
+          break;
+        case 3:
+          sizeString = "Minor Crystal";
+          break;
+        case 4:
+          sizeString = "Major Crystal";
+          break; 
+      }
+
+      this.omegga.whisper(player, this.formattedMessage(`${sizeString}(${size}) on ${planetString}`));
+    }
+  }
 
   async handleRPChatMessages(player: OmeggaPlayer, message: string) {
     const players = await this.store.get("playersInRPChat");
@@ -201,6 +274,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       `Send a message in the RP chat, if you have joined.`,
       `<color="#ffee00ff">!dmerp-h</>`,
       `You have just used it.`,
+      `<color="#ffee00ff">!dmerp-aetherion number</>`,
+      `GM's only`,
       `<color="#ffee00ff">!dmerp-rp option</>`,
       `Allows you to join or leave the RP Chat`,
       `Options:`,

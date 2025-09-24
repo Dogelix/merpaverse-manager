@@ -41,6 +41,18 @@
       "args": [      ]
     },
     {
+      "name": "!dmerp-aetherion",
+      "description": "Generate a location and size for an Aetherion deposit",
+      "example": "!dmerp-aetherion 1",
+      "args": [
+        {
+          "name": "amount",
+          "description": "How many location and size combinations to generate.",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "!dmerp-rp",
       "description": "Generate a statistics brick for use with your units.",
       "example": "!dmerp-stat join",
