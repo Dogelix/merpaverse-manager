@@ -212,7 +212,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         case 8:
           planetString = "Eryndor 8";
           break;
-        case 8:
+        case 9:
           planetString = "Eryndor 9";
           break;
         case 10:
