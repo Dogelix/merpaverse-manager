@@ -85,7 +85,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       })
       .on("chatcmd:dmerp-aetherion", (name: string, amount: number) => {
         const player = this.omegga.getPlayer(name);
-        if (player
+        if (!player
           .getRoles()
           .some(role => ["GM"].includes(role))) {
           this.omegga.whisper(player, this.formattedMessage("Unauthorised"));
