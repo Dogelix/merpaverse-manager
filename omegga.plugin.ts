@@ -180,7 +180,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
   cmdAetherion(player: OmeggaPlayer, amount: number) {
     console.log("Entered cmdAetherion");
-    for (let index = amount; index < amount; index++) {
+    for (let index = 0; index < amount; index++) {
       const planet = this.getRandomInt(1, 10)
       const size = this.getRandomInt(1, 4);
 
