@@ -188,8 +188,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       let sizeString = "";
 
       switch (planet) {
-        case 1:
         case 5:
+          planetString = "Eryndor 1";
+          break;
+        case 1:
           planetString = "Eryndor 1";
           break;
         case 2:
