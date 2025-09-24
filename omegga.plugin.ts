@@ -103,14 +103,13 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
           if (Number.isNaN(amountParsed)) {
             this.omegga.whisper(player, this.formattedMessage("amount MUST be a number"));
+            return;
           }
 
           this.cmdAetherion(player, amountParsed);
         } catch (e) {
-          console.error("An eror occured in dmerp:combat", e);
+          console.error("An error occured in dmerp-aetherion", e);
         }
-
-
       })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
@@ -179,7 +178,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       });
   }
 
-  async cmdAetherion(player: OmeggaPlayer, amount: number) {
+  cmdAetherion(player: OmeggaPlayer, amount: number) {
+    console.log("Entered cmdAetherion");
     for (let index = amount; index < amount; index++) {
       const planet = this.getRandomInt(1, 10)
       const size = this.getRandomInt(1, 4);
