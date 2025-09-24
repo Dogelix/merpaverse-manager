@@ -105,7 +105,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           this.omegga.whisper(player, this.formattedMessage("amount MUST be a number"));
         }
 
-        this.cmdAtherion(player, amountParsed);
+        this.cmdAetherion(player, amountParsed);
       })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
@@ -173,8 +173,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         }
       });
   }
-  async cmdAtherion(player: OmeggaPlayer, number: number) {
-    for (let index = number; index < number; index++) {
+
+  async cmdAetherion(player: OmeggaPlayer, amount: number) {
+    for (let index = amount; index < amount; index++) {
       const planet = this.getRandomInt(1, 10)
       const size = this.getRandomInt(1, 4);
 
