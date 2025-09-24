@@ -97,15 +97,20 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           return;
         }
 
+        try {
+          this.omegga.whisper(player, this.formattedMessage("Generating Deposit Locations"));
+          const amountParsed = parseInt(amount);
 
-        this.omegga.whisper(player, this.formattedMessage("Generating Deposit Locations"));
-        const amountParsed = parseInt(amount);
+          if (Number.isNaN(amountParsed)) {
+            this.omegga.whisper(player, this.formattedMessage("amount MUST be a number"));
+          }
 
-        if (Number.isNaN(amountParsed)) {
-          this.omegga.whisper(player, this.formattedMessage("amount MUST be a number"));
+          this.cmdAetherion(player, amountParsed);
+        } catch (e) {
+          console.error("An eror occured in dmerp:combat", e);
         }
 
-        this.cmdAetherion(player, amountParsed);
+
       })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
