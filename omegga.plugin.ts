@@ -83,7 +83,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
         this.cmdHelp(player);
       })
-      .on("chatcmd:dmerp-aetherion", (name: string, amount: number) => {
+      .on("chatcmd:dmerp-aetherion", (name: string, amount: string) => {
         const player = this.omegga.getPlayer(name);
         if (!player
           .getRoles()
@@ -97,7 +97,15 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           return;
         }
 
-        this.cmdAtherion(player, amount);
+
+        this.omegga.whisper(player, this.formattedMessage("Generating Deposit Locations"));
+        const amountParsed = parseInt(amount);
+
+        if (Number.isNaN(amountParsed)) {
+          this.omegga.whisper(player, this.formattedMessage("amount MUST be a number"));
+        }
+
+        this.cmdAtherion(player, amountParsed);
       })
       .on("chatcmd:dmerp-rp", (name: string, option: string) => {
         const player = this.omegga.getPlayer(name);
@@ -186,7 +194,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           break;
         case 4:
           planetString = "Eryndor 4";
-          break; 
+          break;
         case 6:
           planetString = "Eryndor 6";
           break;
@@ -216,7 +224,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           break;
         case 4:
           sizeString = "Major Crystal";
-          break; 
+          break;
       }
 
       this.omegga.whisper(player, this.formattedMessage(`${sizeString}(${size}) on ${planetString}`));
