@@ -176,6 +176,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           console.error("An eror occured in dmerp:combat", ex);
         }
       });
+
+      return { registeredCommands: ['dmc'] }
   }
 
   cmdAetherion(player: OmeggaPlayer, amount: number) {
