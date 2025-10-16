@@ -177,7 +177,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         }
       });
 
-      return { registeredCommands: ['dmc'] }
+    return { registeredCommands: ['dmc'] };
   }
 
   cmdAetherion(player: OmeggaPlayer, amount: number) {
@@ -350,8 +350,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }
     } else if (["info", "i"].includes(option.toLowerCase())) {
       this.omegga.whisper(player, this.formattedMessage("Players currently in RP Chat:"));
-      players.map((p) => {
-        this.omegga.whisper(player, `<color="${p.getNameColor()}">${p.name}</>`);
+      const playersIds = players.map(e => e.id);
+      playersIds.map((p) => {
+        const pPlayer = this.omegga.getPlayer(p);
+        this.omegga.whisper(player, `<color="${pPlayer.getNameColor()}">${pPlayer.name}</>`);
       });
     } else if (["clear", "c"].includes(option.toLowerCase())) {
       if (player.getRoles().includes("GM")) {
